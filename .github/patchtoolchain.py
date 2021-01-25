@@ -54,13 +54,16 @@ else:
     print("Found toolchain at", ToolchainPath)
 
 # get pack list from atmel's website
-print("Retrieving packs informaton...")
-downloadlink = "http://packs.download.atmel.com/"
-htmltext = request.urlopen(downloadlink).read().decode("utf-8")
-soup = BeautifulSoup(htmltext, "html.parser")
-# find latest pack version
-link = next(button.get("data-link") for button in soup.find_all("button")
-            if button.get("data-link") and "AVR-Dx" in button.get("data-link"))
+if len([f for f in os.listdir(".") if re.search(r"AVR-Dx.*\.atpack", f)]) == 0:
+    print("Retrieving packs informaton...")
+    downloadlink = "http://packs.download.atmel.com/"
+    htmltext = request.urlopen(downloadlink).read().decode("utf-8")
+    soup = BeautifulSoup(htmltext, "html.parser")
+    # find latest pack version
+    link = next(button.get("data-link") for button in soup.find_all("button")
+                if button.get("data-link") and "AVR-Dx" in button.get("data-link"))
+else:
+    link = next(f for f in os.listdir(".") if re.search(r"AVR-Dx.*\.atpack", f))
 
 AvrDaToolkitPack = Path(link)
 if not AvrDaToolkitPack.exists():

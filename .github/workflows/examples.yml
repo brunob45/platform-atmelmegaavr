@@ -29,7 +29,7 @@ jobs:
           pip install -U https://github.com/platformio/platformio/archive/develop.zip
           platformio platform install file://. --with-package=toolchain-atmelavr
           pip install -U shutils pathlib bs4 zipfile2 six
-          python .github/patchtoolchain.py
       - name: Build examples
         run: |
+          python .github/patchtoolchain.py
           platformio run -d ${{ matrix.example }}
