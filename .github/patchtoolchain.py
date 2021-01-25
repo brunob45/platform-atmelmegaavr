@@ -54,17 +54,13 @@ else:
     print("Found toolchain at", ToolchainPath)
 
 # get pack list from atmel's website
-if len([f for f in os.listdir(".") if re.search(r"AVR-Dx.*\.atpack", f)]) == 0:
-    print("Retrieving packs informaton...")
-    downloadlink = "http://packs.download.atmel.com/"
-    htmltext = request.urlopen(downloadlink).read().decode("utf-8")
-    soup = BeautifulSoup(htmltext, "html.parser")
-    # find latest pack version
-    link = next(button.get("data-link") for button in soup.find_all("button")
-                if button.get("data-link") and "AVR-Dx" in button.get("data-link"))
-else:
-    link = next(f for f in os.listdir(".")
-                if re.search(r"AVR-Dx.*\.atpack", f))
+print("Retrieving packs informaton...")
+downloadlink = "http://packs.download.atmel.com/"
+htmltext = request.urlopen(downloadlink).read().decode("utf-8")
+soup = BeautifulSoup(htmltext, "html.parser")
+# find latest pack version
+link = next(button.get("data-link") for button in soup.find_all("button")
+            if button.get("data-link") and "AVR-Dx" in button.get("data-link"))
 
 AvrDaToolkitPack = Path(link)
 if not AvrDaToolkitPack.exists():
@@ -83,7 +79,8 @@ if not AvrDaToolkitPath.exists():
 
 print_verbose("Copying files...")
 
-filefilter = str(AvrDaToolkitPath) + r"/(gcc|include)/.*(/specs-.*|\d+\.[aoh]$)"
+filefilter = str(AvrDaToolkitPath) + \
+    r"/(gcc|include)/.*(/specs-.*|\d+\.[aoh]$)"
 
 # find all header, linker and specs files needed for compilation
 for f in find_file(AvrDaToolkitPath, filefilter):
