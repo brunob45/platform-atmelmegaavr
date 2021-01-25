@@ -7,7 +7,7 @@ import sys
 
 from shutil import copyfile
 from pathlib import Path
-from urllib import request
+from six.moves.urllib import request
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 
@@ -22,7 +22,7 @@ def print_verbose(*args):
 def find_file(dir, match):
     # function to find all files in a directory tree
     result = []
-    for e in os.listdir(dir):
+    for e in os.listdir(str(dir)):
         fullpath = dir / e
         if fullpath.is_file() and re.search(match, str(fullpath)):
             result += [fullpath]
@@ -66,7 +66,7 @@ AvrDaToolkitPack = Path(link)
 if not AvrDaToolkitPack.exists():
     print("Downloading", AvrDaToolkitPack)
     downloadlink += str(AvrDaToolkitPack)
-    request.urlretrieve(downloadlink, AvrDaToolkitPack)
+    request.urlretrieve(downloadlink, str(AvrDaToolkitPack))
 else:
     print("Using local", AvrDaToolkitPack)
 
@@ -75,7 +75,7 @@ AvrDaToolkitPath = Path(AvrDaToolkitPack.stem)
 
 if not AvrDaToolkitPath.exists():
     print("Extracting ", AvrDaToolkitPack, "into", AvrDaToolkitPath)
-    ZipFile(AvrDaToolkitPack, "r").extractall(AvrDaToolkitPath)
+    ZipFile(str(AvrDaToolkitPack), "r").extractall(str(AvrDaToolkitPath))
 
 print_verbose("Copying files...")
 
@@ -95,14 +95,14 @@ for f in find_file(AvrDaToolkitPath, filefilter):
         mynewdir = ToolchainPath / "avr/lib" / str(f).split(os.sep)[-2]
     else:  # is specs file
         mynewdir = ToolchainPath / "lib/gcc/avr/"
-        mynewdir /= os.listdir(mynewdir)[0]
+        mynewdir /= os.listdir(str(mynewdir))[0]
         mynewdir /= "device-specs"
 
     # copy file
-    copyfile(f, mynewdir / f.name)
+    copyfile(str(f), str(mynewdir / f.name))
 
     # remove administrator rights from file
-    os.chmod(mynewdir / f.name, 420)  # 644 in octal
+    os.chmod(str(mynewdir / f.name), 420)  # 644 in octal
 
     print_verbose(f, "->", mynewdir)
 
