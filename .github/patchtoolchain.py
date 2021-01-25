@@ -19,7 +19,7 @@ def print_verbose(*args):
         print(" ".join(map(str, args)))
 
 
-def find_file(dir: Path, match):
+def find_file(dir, match):
     # function to find all files in a directory tree
     result = []
     for e in os.listdir(dir):
