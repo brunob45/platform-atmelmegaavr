@@ -63,7 +63,8 @@ if len([f for f in os.listdir(".") if re.search(r"AVR-Dx.*\.atpack", f)]) == 0:
     link = next(button.get("data-link") for button in soup.find_all("button")
                 if button.get("data-link") and "AVR-Dx" in button.get("data-link"))
 else:
-    link = next(f for f in os.listdir(".") if re.search(r"AVR-Dx.*\.atpack", f))
+    link = next(f for f in os.listdir(".")
+                if re.search(r"AVR-Dx.*\.atpack", f))
 
 AvrDaToolkitPack = Path(link)
 if not AvrDaToolkitPack.exists():
@@ -82,10 +83,10 @@ if not AvrDaToolkitPath.exists():
 
 print_verbose("Copying files...")
 
-filefilter = str(AvrDaToolkitPath) + \
-    r"/(gcc|include)/.*(/specs-.*|\d+\.[aoh]$)"
+filefilter = str(AvrDaToolkitPath / r"(gcc|include)/.*(/specs-.*|\d+\.[aoh]$)")
 
-boardpath = Path("boards") #(PlatformioPath / "boards")
+
+boardpath = Path("boards")  # (PlatformioPath / "boards")
 
 if not boardpath.exists():
     boardpath.mkdir()
