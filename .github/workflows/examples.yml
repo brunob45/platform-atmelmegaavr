@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-16.04, windows-latest, macos-latest]
-        python-version: [2.7, 3.7]
+        python-version: [3.7]
         example:
           - "examples/arduino-blink"
           - "examples/arduino-external-libs"
@@ -27,9 +27,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -U https://github.com/platformio/platformio/archive/develop.zip
-          platformio platform install file://. --with-package=toolchain-atmelavr
+          platformio platform install file://. --with-all-packages
           pip install -U shutils pathlib bs4 zipfile2 six
+          python .github/patchtoolchain.py
       - name: Build examples
         run: |
-          python .github/patchtoolchain.py
           platformio run -d ${{ matrix.example }}
