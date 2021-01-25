@@ -24,7 +24,7 @@ def find_file(dir, match):
     result = []
     for e in os.listdir(str(dir)):
         fullpath = dir / e
-        if fullpath.is_file() and re.search(match, str(fullpath)):
+        if fullpath.is_file() and re.search(match, str(fullpath.as_posix())):
             result += [fullpath]
         elif fullpath.is_dir():
             result += find_file(fullpath, match)
@@ -83,13 +83,7 @@ if not AvrDaToolkitPath.exists():
 
 print_verbose("Copying files...")
 
-filefilter = str(AvrDaToolkitPath / r"(gcc|include)/.*(/specs-.*|\d+\.[aoh]$)")
-
-
-boardpath = Path("boards")  # (PlatformioPath / "boards")
-
-if not boardpath.exists():
-    boardpath.mkdir()
+filefilter = str(AvrDaToolkitPath) + r"/(gcc|include)/.*(/specs-.*|\d+\.[aoh]$)"
 
 # find all header, linker and specs files needed for compilation
 for f in find_file(AvrDaToolkitPath, filefilter):
