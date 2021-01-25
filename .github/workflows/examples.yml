@@ -27,7 +27,8 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -U https://github.com/platformio/platformio/archive/develop.zip
-          platformio platform install file://.
+          platformio platform install file://. --with-package=toolchain-atmelavr
+          python .github/patchtoolchain.py
       - name: Build examples
         run: |
           platformio run -d ${{ matrix.example }}
